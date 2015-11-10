@@ -1,0 +1,14 @@
+extends ../layout.jade
+
+block body 
+
+    h1 Sign Up From
+    form(action='/user/create', method='POST')
+        input(placeholder='Username', name='name',type='text')
+        input(placeholder='Password', name='encryptedPassword',type='password')
+        input(placeholder='Confirm Password', name='confirmPasswd',type='password')
+        input(placeholder='Email', name='email',type='email')
+
+        input(type='submit',value='Create Account')
+        input(type='hidden',name='_csrf',value=_csrf)
+
