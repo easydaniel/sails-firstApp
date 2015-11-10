@@ -1,0 +1,10 @@
+extends ../layout.jade
+
+block body
+    form(action='/user/update/' + user.id, method='POST')
+        input(value=user.name, name='name', type='text')
+        input(value=user.email, name='email', type='email')
+        input(type='submit', value='Proceed')
+        input(type='hidden', name='_csrf',value=_csrf)
+
+

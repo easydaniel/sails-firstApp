@@ -3,9 +3,13 @@ extends ../layout.jade
 block body 
 
     h1 Sign Up From
+    if (flash && flash.err && flash.err.invalidAttributes)
+        ul
+            each val, key in flash.err.invalidAttributes
+                li= key + ": " + JSON.stringify(val) 
     form(action='/user/create', method='POST')
         input(placeholder='Username', name='name',type='text')
-        input(placeholder='Password', name='encryptedPassword',type='password')
+        input(placeholder='Password', name='password',type='password')
         input(placeholder='Confirm Password', name='confirmPasswd',type='password')
         input(placeholder='Email', name='email',type='email')
 

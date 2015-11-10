@@ -29,7 +29,6 @@ module.exports = {
         encryptedPassword: {
 
             type: 'string',
-            required: true
 
         },
 
@@ -39,6 +38,23 @@ module.exports = {
             delete obj.confirmPasswd;
             return obj;
         }
+
+    },
+
+    beforeCreate: function(values, next) {
+        if (!values.password || values.password != values.confirmPasswd) {
+            return next({
+                err: 'Password does not match'
+            });
+        }
+
+        require('bcrypt').hash(values.password, 10, function passwordEncrypted(err, encrypted) {
+            if (err) {
+                return next(err);
+            }
+            values.encryptedPassword = encrypted;
+            next();
+        });
 
     }
 };

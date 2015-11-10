@@ -1,0 +1,29 @@
+extends ../layout.jade
+
+block body
+    .container
+        h3 Users
+        table
+            tr
+                th ID
+                th Name
+                th Email
+                th
+                th
+            
+            each user in users
+                tr(data-id=user.id, data-model='user')
+                    td= user.id
+                    td= user.name
+                    td= user.email
+                    td
+                        a(href='/user/show/'+user.id) show
+                    td
+                        a(href='/user/edit/'+user.id) edit
+                    td
+                        form(action='/user/destroy/'+user.id, method='POST')
+                            input(type='hidden', name='_method', value='delete')
+                            input(type='hidden', name='_csrf', value=_csrf)
+                            input(type='submit', value='delete')
+
+
