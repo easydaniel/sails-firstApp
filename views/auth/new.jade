@@ -1,0 +1,16 @@
+extends ../layout.jade
+
+block body
+
+    form(action='/auth/create',method='POST')
+        h2 Sign in page
+        if (flash && flash.err)
+            ul
+                each val, key in flash.err
+                    li= key + ": " + JSON.stringify(val) 
+
+        input(type='text',placeholder='Email',name='email')
+        input(type='password',placeholder='Password',name='password')
+        input(type='submit',value='Sign in')
+        input(type='hidden',value=_csrf,name='_csrf')
+
