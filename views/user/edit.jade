@@ -6,5 +6,9 @@ block body
         input(value=user.email, name='email', type='email')
         input(type='submit', value='Proceed')
         input(type='hidden', name='_csrf',value=_csrf)
+        if (user.admin)
+            input(type='checkbox',name='admin',checked)
+        else
+            input(type='checkbox',name='admin')
 
 

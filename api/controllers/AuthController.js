@@ -12,9 +12,8 @@ module.exports = {
     },
 
     create: function(req, res, next) {
-
         
-        if (!req.body.email || !req.body.password) {
+        if (!req.param('email') || !req.param('password')) {
             req.session.flash = {
                 err: {
                     email: 'Email Required',
@@ -24,7 +23,7 @@ module.exports = {
             return res.redirect('/auth/new');
         }
 
-        User.findOneByEmail(req.body.email, function(err, user) {
+        User.findOneByEmail(req.param('email'), function(err, user) {
             if (err) {
                 return next(err);
             }
@@ -38,7 +37,7 @@ module.exports = {
                 return res.redirect('/auth/new');
             }
 
-            require('bcrypt').compare(req.body.password, user.encryptedPassword, function(err, valid) {
+            require('bcrypt').compare(req.param('password'), user.encryptedPassword, function(err, valid) {
                 if (err) {
                     return next(err);
                 }
@@ -53,6 +52,10 @@ module.exports = {
                 }
                 req.session.authenticated = true;
                 req.session.User = user;
+                
+                if (req.session.User.admin) {
+                    return res.redirect('/user');
+                }
 
                 res.redirect('/user/show/' + user.id);
 

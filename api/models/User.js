@@ -32,6 +32,13 @@ module.exports = {
 
         },
 
+        admin: {
+
+            type: 'boolean',
+            defaultsTo: false
+
+        },
+
         toJSON: function() {
             var obj = this.toObject();
             delete obj._csrf;
@@ -41,18 +48,25 @@ module.exports = {
 
     },
 
-    beforeCreate: function(values, next) {
-        if (!values.password || values.password != values.confirmPasswd) {
+    beforeValidate: function(params, next) {
+       
+       next();
+
+    },
+
+    beforeCreate: function(params, next) {
+
+        if (!params.password || params.password != params.confirmPasswd) {
             return next({
                 err: 'Password does not match'
             });
         }
 
-        require('bcrypt').hash(values.password, 10, function passwordEncrypted(err, encrypted) {
+        require('bcrypt').hash(params.password, 10, function passwordEncrypted(err, encrypted) {
             if (err) {
                 return next(err);
             }
-            values.encryptedPassword = encrypted;
+            params.encryptedPassword = encrypted;
             next();
         });
 

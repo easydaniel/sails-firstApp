@@ -12,22 +12,27 @@ module.exports = {
     },
 
     create: function(req, res, next) {
+
         User.create(req.params.all(), function userCreated(err, user) {
             if (err) {
                 console.log(err);
-                
+
                 req.session.flash = {
                     err: err
                 }
                 return res.redirect('/user/new');
             }
             //res.json(user);
+            req.session.authenticated = true;
+            req.session.User = user;
+
             res.redirect('/user/show/' + user.id);
         });
     },
 
     show: function(req, res, next) {
-        User.findOne(req.params.id, function foundUser(err, user) {
+
+        User.findOne(req.param('id'), function foundUser(err, user) {
             if (err) {
                 return next(err);
             }
@@ -41,22 +46,42 @@ module.exports = {
     },
 
     edit: function(req, res, next) {
-        User.findOne(req.params.id, function foundUser(err, user) {
-           if (err) {
-              return next(err);
-           }
-            if (!user) {
-               return next();
+
+        User.findOne(req.param('id'), function foundUser(err, user) {
+            if (err) {
+                return next(err);
             }
-           res.view({
-               user: user
-           }); 
+            if (!user) {
+                return next();
+            }
+            res.view({
+                user: user
+            }); 
         });
     },
 
     update: function(req, res, next) {
 
-        User.update(req.params.id, req.params.all(), function userUpdate(err) {
+
+        var userObj; 
+
+        if (req.param('admin') === 'on') {
+            userObj = {
+                name: req.param('name'),
+                email: req.param('email'),
+                admin: true,
+            }
+
+        } else {
+            userObj = {
+                name: req.param('name'),
+                email: req.param('email'),
+                admin: false,
+            }
+        }
+
+
+        User.update(req.param('id'), userObj, function userUpdate(err) {
             if (err) {
                 return res.redirect('/user/edit/' + req.params.id);
             }
@@ -68,8 +93,8 @@ module.exports = {
     },
 
     destroy: function(req, res, next) {
-        
-        User.findOne(req.params.id, function foundUser(err, user) {
+
+        User.findOne(req.param('id'), function foundUser(err, user) {
             if (err) {
                 return next(err);
             }
@@ -77,7 +102,7 @@ module.exports = {
                 return next();
             }
 
-            User.destroy(req.params.id, function userDestroy(err) {
+            User.destroy(req.param('id'), function userDestroy(err) {
                 if (err) {
                     return next(err);
                 }
@@ -91,7 +116,7 @@ module.exports = {
     },
 
     index: function(req, res, next) {
-        
+
         User.find(function foundUsers(err, users) {
             if (err) {
                 return next(err);
@@ -103,6 +128,6 @@ module.exports = {
 
 
     }
-	
+
 };
 
